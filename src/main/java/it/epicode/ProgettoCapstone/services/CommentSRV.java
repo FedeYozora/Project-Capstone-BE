@@ -38,6 +38,11 @@ public class CommentSRV {
 
     }
 
+    public List<Comment> getVisibleComments() {
+        return commentDAO.findCommentsByCommentStatus(CommentStatus.VISIBLE);
+
+    }
+
     public Comment getCommentById(Long id) {
         return commentDAO.findById(id).orElseThrow(() -> new NotFoundException(id));
     }
@@ -46,12 +51,17 @@ public class CommentSRV {
         return commentDAO.findCommentsByWorkId(id);
     }
 
+    public List<Comment> getCommentByWorkIdAndCommentStatus(Long id) {
+        return commentDAO.findByWorkIdAndCommentStatus(id, CommentStatus.VISIBLE);
+    }
+
     public Comment createComment(NewComment newComment, User user, Long workId) {
         User userFound = userDAO.findById(user.getId()).orElseThrow();
         Comment comment = new Comment();
         comment.setContent(newComment.content());
         comment.setCommentStatus(CommentStatus.VISIBLE);
         comment.setCreatedAt(LocalDate.now());
+        comment.setAvatarUser(user.getAvatar());
         comment.setAuthor(userDAO.findUsernameById(userFound.getId()));
         comment.setUser(userFound);
         comment.setWork(workDAO.findById(workId).orElseThrow(() -> new EntityNotFoundException("Work not found")));

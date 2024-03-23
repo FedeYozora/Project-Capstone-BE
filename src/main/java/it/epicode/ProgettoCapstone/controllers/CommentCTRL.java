@@ -23,8 +23,14 @@ public class CommentCTRL {
     private CommentSRV commentSRV;
 
     @GetMapping
-    public Page<Comment> getWorks(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "id") String orderBy) {
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public Page<Comment> getAllComments(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "id") String orderBy) {
         return this.commentSRV.getComments(page, size, orderBy);
+    }
+
+    @GetMapping("/visible")
+    public List<Comment> getVisibleComments(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "id") String orderBy) {
+        return this.commentSRV.getVisibleComments();
     }
 
     @GetMapping("/{id}")
@@ -35,6 +41,11 @@ public class CommentCTRL {
     @GetMapping("/works/{id}")
     public List<Comment> getCommentsByWorkId(@PathVariable Long id) {
         return this.commentSRV.getCommentByWorkId(id);
+    }
+
+    @GetMapping("/works/{id}/visible")
+    public List<Comment> getCommentsByWorkIdAndCommentStatus(@PathVariable Long id) {
+        return this.commentSRV.getCommentByWorkIdAndCommentStatus(id);
     }
 
     @PostMapping
@@ -50,7 +61,7 @@ public class CommentCTRL {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public Comment updateWorkById(@PathVariable Long id, @RequestBody @Validated NewComment newComment, BindingResult validation) {
+    public Comment updateCommentById(@PathVariable Long id, @RequestBody @Validated NewComment newComment, BindingResult validation) {
         if (validation.hasErrors()) {
             throw new BadRequestException(validation.getAllErrors());
         }
@@ -58,7 +69,6 @@ public class CommentCTRL {
     }
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT) //  Status Code 204
     @PreAuthorize("hasAuthority('ADMIN')")
     public void deleteCommentById(@PathVariable Long id) {
         this.commentSRV.deleteComment(id);
