@@ -8,6 +8,8 @@ public record NewWork(
         String name,
         String description,
         LocalDate dateCreated,
-        WorksStatus workStatus
+        WorksStatus worksStatus,
+        String image,
+        Boolean featured
 ) {
 }

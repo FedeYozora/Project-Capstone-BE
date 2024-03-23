@@ -11,6 +11,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/works")
@@ -19,7 +22,7 @@ public class WorkCTRL {
     private WorkSRV workSRV;
 
     @GetMapping
-    public Page<Work> getWorks(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "id") String orderBy) {
+    public Page<Work> getWorks(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "12") int size, @RequestParam(defaultValue = "id") String orderBy) {
         return this.workSRV.getWorks(page, size, orderBy);
     }
 
@@ -53,5 +56,11 @@ public class WorkCTRL {
     @PreAuthorize("hasAuthority('ADMIN')")
     public void deleteWorkById(@PathVariable Long id) {
         this.workSRV.deleteWork(id);
+    }
+
+    @PostMapping("/uploadAvatar")
+    @ResponseStatus(HttpStatus.OK) // Status Code 200
+    public String uploadAvatar(@RequestParam("image") MultipartFile image) throws IOException {
+        return this.workSRV.uploadImageWork(image);
     }
 }
