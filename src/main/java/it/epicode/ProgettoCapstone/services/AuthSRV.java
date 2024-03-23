@@ -48,4 +48,8 @@ public class AuthSRV {
 
         return userDAO.save(newUser);
     }
+
+    public String hashPassword(String password) {
+        return bcrypt.encode(password);
+    }
 }

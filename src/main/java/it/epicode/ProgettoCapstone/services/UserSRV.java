@@ -22,7 +22,8 @@ public class UserSRV {
 
     @Autowired
     private UserDAO userDAO;
-
+    @Autowired
+    private AuthSRV authSRV;
     @Autowired
     private Cloudinary cloudinaryUploader;
 
@@ -44,7 +45,8 @@ public class UserSRV {
         found.setSurname(updatedUser.surname());
         found.setEmail(updatedUser.email());
         found.setUsername(updatedUser.username());
-        found.setPassword(updatedUser.password());
+        String encodedPass = authSRV.hashPassword(updatedUser.password());
+        found.setPassword(encodedPass);
         userDAO.save(found);
         return found;
     }
@@ -58,7 +60,6 @@ public class UserSRV {
         return userDAO.findByEmail(email).orElseThrow(() -> new RuntimeException("User with this email not found"));
 
     }
-
 
     public String uploadAvatar(MultipartFile image, UUID id) throws IOException {
         String url = (String) cloudinaryUploader.uploader().upload(image.getBytes(),

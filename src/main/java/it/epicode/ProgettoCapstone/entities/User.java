@@ -21,7 +21,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
-@JsonIgnoreProperties({"password", "credentialsNonExpired", "accountNonExpired", "authorities", "username", "accountNonLocked", "enabled"})
+@JsonIgnoreProperties({"password", "credentialsNonExpired", "accountNonExpired", "authorities", "accountNonLocked", "enabled"})
 public class User implements UserDetails {
     @Id
     @Setter(AccessLevel.NONE)
@@ -38,7 +38,7 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user", orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Comment> comments = new ArrayList<>();
 
     public User(String email, String username, String password, String name, String surname) {
@@ -46,6 +46,7 @@ public class User implements UserDetails {
         this.username = username;
         this.password = password;
         this.name = name;
+        this.avatar = "http://res.cloudinary.com/dq3fbi46j/image/upload/v1710953195/nzxi2xytzlfansa4gejf.jpg";
         this.surname = surname;
         this.role = Role.USER;
     }
