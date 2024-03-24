@@ -36,6 +36,10 @@ public class WorkSRV {
         return workDAO.findById(id).orElseThrow(() -> new NotFoundException(id));
     }
 
+    public Work getWorkByCommentId(Long id) {
+        return workDAO.findWorkByCommentId(id);
+    }
+
     public Work createWork(NewWork newWork) {
         Work work = new Work();
         work.setName(newWork.name());

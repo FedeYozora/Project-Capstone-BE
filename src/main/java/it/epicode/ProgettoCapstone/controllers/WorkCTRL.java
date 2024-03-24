@@ -31,6 +31,11 @@ public class WorkCTRL {
         return this.workSRV.getWorkById(id);
     }
 
+    @GetMapping("/comments/{id}")
+    public Work getWorkByCommentId(@PathVariable Long id) {
+        return this.workSRV.getWorkByCommentId(id);
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('ADMIN')")

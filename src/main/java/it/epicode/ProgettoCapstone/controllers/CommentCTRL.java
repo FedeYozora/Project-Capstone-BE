@@ -23,7 +23,6 @@ public class CommentCTRL {
     private CommentSRV commentSRV;
 
     @GetMapping
-    @PreAuthorize("hasAuthority('ADMIN')")
     public Page<Comment> getAllComments(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "id") String orderBy) {
         return this.commentSRV.getComments(page, size, orderBy);
     }
