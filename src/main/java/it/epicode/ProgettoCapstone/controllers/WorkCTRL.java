@@ -1,6 +1,7 @@
 package it.epicode.ProgettoCapstone.controllers;
 
 import it.epicode.ProgettoCapstone.entities.Work;
+import it.epicode.ProgettoCapstone.enums.CommentStatus;
 import it.epicode.ProgettoCapstone.exceptions.BadRequestException;
 import it.epicode.ProgettoCapstone.payloads.NewWork;
 import it.epicode.ProgettoCapstone.services.WorkSRV;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/works")
@@ -22,8 +24,20 @@ public class WorkCTRL {
     private WorkSRV workSRV;
 
     @GetMapping
-    public Page<Work> getWorks(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "12") int size, @RequestParam(defaultValue = "id") String orderBy) {
+    public Page<Work> getWorks(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "50") int size, @RequestParam(defaultValue = "id") String orderBy) {
         return this.workSRV.getWorks(page, size, orderBy);
+    }
+
+    @GetMapping("/visible-comments")
+    public Page<Work> findWorksWithVisibleComments(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "50") int size, @RequestParam(defaultValue = "id") String orderBy) {
+        Page<Work> works = this.workSRV.getWorks(page, size, orderBy);
+        works.get().forEach(work -> work.getComments().removeIf(comment -> comment.getCommentStatus() != CommentStatus.VISIBLE));
+        return works;
+    }
+
+    @GetMapping("/featured")
+    public List<Work> getFeaturedWorks(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "id") String orderBy) {
+        return this.workSRV.getFeaturedWorks();
     }
 
     @GetMapping("/{id}")
@@ -65,6 +79,7 @@ public class WorkCTRL {
 
     @PostMapping("/uploadAvatar")
     @ResponseStatus(HttpStatus.OK) // Status Code 200
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String uploadAvatar(@RequestParam("image") MultipartFile image) throws IOException {
         return this.workSRV.uploadImageWork(image);
     }

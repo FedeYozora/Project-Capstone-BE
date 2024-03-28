@@ -28,6 +28,7 @@ public class UserCTRL {
     private AuthSRV authSRV;
 
     @GetMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     public Page<User> getUsers(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "id") String orderBy) {
         return this.userSRV.getUsers(page, size, orderBy);
     }

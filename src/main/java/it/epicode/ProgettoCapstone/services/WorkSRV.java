@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 public class WorkSRV {
@@ -32,6 +33,11 @@ public class WorkSRV {
 
     }
 
+    public List<Work> getFeaturedWorks() {
+        return workDAO.findByFeaturedTrue();
+
+    }
+
     public Work getWorkById(Long id) {
         return workDAO.findById(id).orElseThrow(() -> new NotFoundException(id));
     }
@@ -44,6 +50,7 @@ public class WorkSRV {
         Work work = new Work();
         work.setName(newWork.name());
         work.setImage(newWork.image());
+        work.setFeatured(newWork.featured());
         work.setDescription(newWork.description());
         work.setDateCreated(newWork.dateCreated());
         work.setDateUploaded(LocalDate.now());
