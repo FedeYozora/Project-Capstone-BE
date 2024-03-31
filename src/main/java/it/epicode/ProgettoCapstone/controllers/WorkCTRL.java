@@ -24,12 +24,12 @@ public class WorkCTRL {
     private WorkSRV workSRV;
 
     @GetMapping
-    public Page<Work> getWorks(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "50") int size, @RequestParam(defaultValue = "id") String orderBy) {
+    public Page<Work> getWorks(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "20") int size, @RequestParam(defaultValue = "id") String orderBy) {
         return this.workSRV.getWorks(page, size, orderBy);
     }
 
     @GetMapping("/visible-comments")
-    public Page<Work> findWorksWithVisibleComments(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "50") int size, @RequestParam(defaultValue = "id") String orderBy) {
+    public Page<Work> findWorksWithVisibleComments(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "20") int size, @RequestParam(defaultValue = "id") String orderBy) {
         Page<Work> works = this.workSRV.getWorks(page, size, orderBy);
         works.get().forEach(work -> work.getComments().removeIf(comment -> comment.getCommentStatus() != CommentStatus.VISIBLE));
         return works;
