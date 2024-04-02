@@ -12,4 +12,7 @@ public interface WorkDAO extends JpaRepository<Work, Long> {
 
     @Query("SELECT w FROM Work w WHERE w.featured = true")
     List<Work> findByFeaturedTrue();
+
+    @Query("SELECT w FROM Work w WHERE LOWER(w.name) LIKE %:searchTerm% OR LOWER(w.description) LIKE %:searchTerm%")
+    List<Work> findBySearchTermIgnoreCase(String searchTerm);
 }

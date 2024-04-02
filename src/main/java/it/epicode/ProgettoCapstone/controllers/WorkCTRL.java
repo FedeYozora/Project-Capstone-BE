@@ -1,9 +1,11 @@
 package it.epicode.ProgettoCapstone.controllers;
 
+import it.epicode.ProgettoCapstone.config.EmailSender;
 import it.epicode.ProgettoCapstone.entities.Work;
 import it.epicode.ProgettoCapstone.enums.CommentStatus;
 import it.epicode.ProgettoCapstone.exceptions.BadRequestException;
 import it.epicode.ProgettoCapstone.payloads.NewWork;
+import it.epicode.ProgettoCapstone.payloads.SendEmailModel;
 import it.epicode.ProgettoCapstone.services.WorkSRV;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,6 +24,8 @@ import java.util.List;
 public class WorkCTRL {
     @Autowired
     private WorkSRV workSRV;
+    @Autowired
+    private EmailSender emailSender;
 
     @GetMapping
     public Page<Work> getWorks(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "20") int size, @RequestParam(defaultValue = "id") String orderBy) {
@@ -50,6 +54,18 @@ public class WorkCTRL {
         return this.workSRV.getWorkByCommentId(id);
     }
 
+    @GetMapping("/searchByName")
+    public List<Work> searchWorksByName(@RequestParam String name) {
+        return workSRV.searchWorksByName(name);
+    }
+
+    @GetMapping("/searchByNameVC")
+    public List<Work> searchWorksByNameWithVisibleComments(@RequestParam String name) {
+        List<Work> works = workSRV.searchWorksByName(name);
+        works.forEach(work -> work.getComments().removeIf(comment -> comment.getCommentStatus() != CommentStatus.VISIBLE));
+        return works;
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -59,6 +75,11 @@ public class WorkCTRL {
         }
         return this.workSRV.createWork(newWork);
 
+    }
+
+    @PostMapping("/mail")
+    public void sendEmail(@ModelAttribute SendEmailModel model) {
+        this.emailSender.sendEmail(model);
     }
 
     @PutMapping("/{id}")

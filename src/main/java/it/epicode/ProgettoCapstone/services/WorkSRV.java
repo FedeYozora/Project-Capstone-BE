@@ -69,6 +69,10 @@ public class WorkSRV {
         return found;
     }
 
+    public List<Work> searchWorksByName(String name) {
+        return workDAO.findBySearchTermIgnoreCase(name);
+    }
+
     public void deleteWork(Long id) {
         Work found = getWorkById(id);
         workDAO.delete(found);

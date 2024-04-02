@@ -54,6 +54,7 @@ public class JWTFilter extends OncePerRequestFilter {
                 || antPathMatcher.match("/swagger-ui/**", request.getServletPath())
                 || antPathMatcher.match("/works", request.getServletPath()) && request.getMethod().equals("GET")
                 || antPathMatcher.match("/works/**", request.getServletPath()) && request.getMethod().equals("GET")
+                || antPathMatcher.match("/works/mail", request.getServletPath()) && request.getMethod().equals("POST")
                 || antPathMatcher.match("/comments", request.getServletPath()) && request.getMethod().equals("GET")
                 || antPathMatcher.match("/comments/**", request.getServletPath()) && request.getMethod().equals("GET")
                 || antPathMatcher.match("/comments/works/**", request.getServletPath()) && request.getMethod().equals("GET")
